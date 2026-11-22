@@ -1,0 +1,167 @@
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value)
+    {
+        data = value;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+// Insert node into BST
+Node* insertNode(Node* root, int value)
+{
+    if (root == NULL)
+    {
+        return new Node(value);
+    }
+
+    if (value < root->data)
+    {
+        root->left = insertNode(root->left, value);
+    }
+    else if (value > root->data)
+    {
+        root->right = insertNode(root->right, value);
+    }
+
+    return root;
+}
+
+// Inorder Traversal
+void inorder(Node* root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
+}
+
+// Calculate Height
+int height(Node* root)
+{
+    if (root == NULL)
+    {
+        return -1;
+    }
+
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    if (leftHeight > rightHeight)
+        return leftHeight + 1;
+    else
+        return rightHeight + 1;
+}
+
+// Print Leaf Nodes
+void printLeaf(Node* root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        cout << root->data << " ";
+        return;
+    }
+
+    printLeaf(root->left);
+    printLeaf(root->right);
+}
+
+// Copy Original BST
+Node* copyTree(Node* root)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    Node* newNode = new Node(root->data);
+
+    newNode->left = copyTree(root->left);
+    newNode->right = copyTree(root->right);
+
+    return newNode;
+}
+
+// Print Nodes at a Given Level
+void printLevel(Node* root, int level)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (level == 1)
+    {
+        cout << root->data << " ";
+    }
+    else
+    {
+        printLevel(root->left, level - 1);
+        printLevel(root->right, level - 1);
+    }
+}
+
+// Level Order Traversal
+void levelOrder(Node* root)
+{
+    int h = height(root);
+
+    for (int i = 1; i <= h + 1; i++)
+    {
+        printLevel(root, i);
+        cout << endl;
+    }
+}
+
+int main()
+{
+    Node* root = NULL;
+    Node* newRoot = NULL;
+
+    int n, value;
+
+    cout << "Enter number of nodes: ";
+    cin >> n;
+
+    cout << "Enter node values:\n";
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> value;
+        root = insertNode(root, value);
+    }
+
+    cout << "\nOriginal BST (Inorder): ";
+    inorder(root);
+
+    newRoot = copyTree(root);
+
+    cout << "\n\nNew Tree (Level Order):\n";
+    levelOrder(newRoot);
+
+    cout << "\nHeight of BST: " << height(newRoot) << endl;
+
+    cout << "Leaf Nodes: ";
+    printLeaf(newRoot);
+
+    cout << endl;
+
+    return 0;
+}
